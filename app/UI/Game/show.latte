@@ -1,0 +1,17 @@
+{block content}
+
+    <p><a n:href="Game:default">← zpět na výpis her</a></p>
+
+    <p>Řádek hry: {$game->id}</p>
+
+    <p>Jméno hry: {$game->name}</p>
+
+    <p>Žánr: {$game->genre}</p>
+
+    <p>Vydání: {$game->release}</p>
+
+    <p>Popis hry: {$game->description}</p>
+
+    <a n:href="Game:edit $game->id">Upravit hru</a>
+
+    <a n:href="deleteGame! $game->id">Smazat hru</a>

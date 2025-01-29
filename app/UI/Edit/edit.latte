@@ -1,0 +1,11 @@
+{block content}
+<h1>Upravit příspěvek</h1>
+{control postForm}
+{if $post->image}
+    		<img src="{$basePath}/{$post->image}">
+{else}
+    		<img src="{$basePath}/upload/no-image.png">
+{/if}
+{if $post->image}
+    <a n:href="deleteImage! $post->id">Smazat obrázek</a>
+{/if}
