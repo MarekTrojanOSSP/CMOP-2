@@ -1,9 +1,0 @@
-<div class="games">
-
-	<h2><a n:href="Game:create">Přidat novou hru</a></h2>
-
-	{foreach $games as $game}
-		<p><b><a href="{$basePath}/game/show/{$game->id}" n:tag-if="$game->name">
-			{$game->name}</a></b></p>
-	{/foreach}
-</div>

@@ -18,12 +18,32 @@ final class PostFacade
 			->order('created_at DESC');
 	}
 
+	public function getPublishedArticlesCount(): int
+	{
+		return $this->database->fetchField('SELECT COUNT(*) FROM posts WHERE created_at < ?', new \DateTime);
+	}
+
+	public function getCategories()
+	{
+		return $this->database
+			->table('category');
+	}
+
 	public function getPostById(int $postId)
 	{
 		return $this->database
 			->table('post')
 			->get($postId);
 	}
+
+	public function getPostsByCategoryId(int $categoryId)
+	{
+		return $this->database
+			->table('post')
+			->where('category_id', $categoryId)
+			->fetchAll();
+	}
+
 
 	public function addComment(int $postId, \stdClass $data)
 	{
@@ -35,7 +55,7 @@ final class PostFacade
 		]);
 	}
 
-	public function getComments(int $postId)
+	public function getComment(int $postId)
 	{
 		$post = $this->database->table("post")->get($postId);
 
@@ -65,4 +85,11 @@ final class PostFacade
 			->where('id', $commentId)
 			->delete();
 	}
+
+	public function addViews($postId){
+        $this->database->table('post')->wherePrimary($postId)->update([
+            'view' => new \Nette\Database\SqlLiteral('view + 1')
+        ]);
+    }
+
 }

@@ -1,3 +1,2 @@
-config/local.neon
-/vendor
-temp
+vendor
+composer.lock
