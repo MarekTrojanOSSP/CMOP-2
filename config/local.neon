@@ -1,4 +1,0 @@
-database:
-	dsn: 'mysql:host=127.0.0.1;dbname=rabbit'
-	user: root
-	password: root
