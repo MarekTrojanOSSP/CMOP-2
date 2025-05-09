@@ -1,15 +1,26 @@
 {block content}
-<h1>Upravit příspěvek</h1>
-{control postForm}
 
-{snippet image}
-{if $post->image}
-    		<img src="{$basePath}/{$post->image}">
-{else}
-    		<img src="{$basePath}/upload/no-image.png">
-{/if}
-{/snippet}
+<div class="container mt-4">
 
-{if $post->image}
-    <a n:href="deleteImage! $post->id" class='ajax'>Smazat obrázek</a>
-{/if}
+    <h1 class="mb-4">Upravit příspěvek</h1>
+
+    <!-- Formulář pro úpravu příspěvku -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            {control postForm}
+        </div>
+    </div>
+
+    <!-- Náhled obrázku -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center" n:snippet="image">
+            <h5 class="mb-3">Obrázek k příspěvku</h5>
+            <img src="{$basePath}/{$post->image ? $post->image : 'upload/no-image.png'}" class="img-fluid rounded mb-3" alt="Obrázek příspěvku">
+            
+            {if $post->image}
+                <a n:href="deleteImage! $post->id" class="btn btn-outline-danger ajax">Smazat obrázek</a>
+            {/if}
+        </div>
+    </div>
+
+</div>

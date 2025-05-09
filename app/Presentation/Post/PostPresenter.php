@@ -71,19 +71,27 @@ final class PostPresenter extends Nette\Application\UI\Presenter
 		$this->redirect('this', ['postId' => $postId]);
 	}
 
-	public function addView(int $postId, int $view) {
-		$this->template->views = $this->facade->addViews($postId, $view);
-		
-		 $this->table('post');
-		 $this->count($view);
-		 $this->update($view);
-	}
-	public function actionShow(int $postId): void 
+	public function handleDeletePost(int $postId): void
+    {
+    $success = $this->facade->deletePost($postId);
+
+    if ($success) {
+        $this->flashMessage('success');
+    } else {
+        $this->flashMessage('error');
+    }
+
+    $this->redirect('Home:default');
+    }
+    public function actionShow(int $postId)
 {
     $post = $this->facade->getPostById($postId);
-
-    if ($post->status === 'ARCHIVED' && !$this->user->isLoggedIn()) {
+    if ($post === null) {
         $this->redirect('Home:default');
+    }
+
+    if (($post->status === "ARCHIVED") && !$this->getUser()->isLoggedIn()) {
+        $this->redirect('Home:');
     }
 }
 

@@ -1,0 +1,59 @@
+{block content}
+
+<div class="container mt-4">
+    <!-- Zpět -->
+    <p>
+        <a n:href="Home:default" class="btn btn-link text-decoration-none">
+            ← Zpět na výpis příspěvků
+        </a>
+    </p>
+
+    <!-- Pokud nemá admin práva -->
+    {if $user->isInRole('uzivatel') || !$user->isLoggedIn()}
+        <div class="alert alert-danger text-center" role="alert">
+            Stop! You violated the law.
+        </div>
+    {/if}
+
+    <!-- Admin sekce -->
+    {if $user->isInRole('admin')}
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h4">Seznam uživatelů</h1>
+            <a n:href="Sign:up, back => 'admin'" class="btn btn-success">
+                Přidat nového uživatele
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Přezdívka</th>
+                        <th>Jméno</th>
+                        <th>Příjmení</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Vytvořen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr n:foreach="$users as $us">
+                        <td>{$us->id}</td>
+                        <td>{$us->username}</td>
+                        <td>{$us->firstname}</td>
+                        <td>{$us->lastname}</td>
+                        <td>{$us->email}</td>
+                        <td>
+                            <span class="badge bg-{$us->role == 'admin' ? 'danger' : 'secondary'} text-uppercase">
+                                {$us->role}
+                            </span>
+                        </td>
+                        <td>{$us->created_at|date:'F j, Y'}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {/if}
+</div>

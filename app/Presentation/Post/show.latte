@@ -1,64 +1,94 @@
 {block content}
 
-{if $user->isLoggedIn()}
-    	<p>(<a n:href="Sign:out">Sign out</a>)</p>
-	{else}
-    	<p>(<a n:href="Sign:in">Sign in</a>)</p>
-	{/if}
+<div class="container mt-4">
 
-	{if $user->isInRole('admin')}
-    	<p>Jsi role Admin</p>
-	{elseif $user->isInRole('user')}
-    	<p>Jsi role User</p>
-	{else}
-    	<p>Nemáš roli - jsi pouze návštěvník</p>
-	{/if}
+    <!-- Přihlášení / Odhlášení a role -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            {if $user->isLoggedIn()}
+                <a n:href="Sign:out" class="btn btn-outline-danger btn-sm">Odhlásit se</a>
+            {else}
+                <a n:href="Sign:in" class="btn btn-outline-primary btn-sm">Přihlásit se</a>
+            {/if}
+        </div>
+        <div>
+            {if $user->isInRole('admin')}
+                <span class="badge bg-danger">Admin</span>
+            {elseif $user->isInRole('user')}
+                <span class="badge bg-secondary">User</span>
+            {else}
+                <span class="badge bg-light text-dark">Návštěvník</span>
+            {/if}
+        </div>
+    </div>
 
-<p><a n:href="Home:default">← zpět na výpis příspěvků</a></p>
+    <!-- Zpět -->
+    <p>
+        <a n:href="Home:default" class="btn btn-link text-decoration-none">
+            ← Zpět na výpis příspěvků
+        </a>
+    </p>
 
-<div class="date">{$post->created_at|date:'F j, Y'}</div>
+    <!-- Informace o příspěvku -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="text-muted small mb-1">
+                {$post->created_at|date:'F j, Y'}
+            </div>
 
-<h1 n:block="title">{$post->title}</h1>
+            <h1 class="card-title">{$post->title}</h1>
+            <h5 class="text-muted">Stav: <span class="badge bg-info text-dark">{$post->status}</span></h5>
 
-<h2 n:block="status">Stav: {$post->status}</h2>
+            <div class="mb-2">
+                <span class="badge bg-success">{$post->category->name}</span>
+            </div>
 
-<div class="category">{$post->category->name}</div>
+            <p class="text-muted">Zhlédnutí: {$post->view}</p>
 
-<p>Zhlednuti: {$post->view}</p>
+            <div class="mb-3">{$post->content}</div>
 
-<div class="post">{$post->content}</div>
+            <div n:snippet="image" class="mb-3 text-center">
+                <img src="{$basePath}/{$post->image ? $post->image : 'upload/no-image.png'}" class="img-fluid rounded">
+            </div>
 
-<div n:snippet="image">
-	{if $post->image}
-    		<img src="{$basePath}/{$post->image}">
-	{else}
-    		<img src="{$basePath}/upload/no-image.png">
-	{/if}
+            {if $user->isLoggedIn() && ($user->getIdentity()->id == $post->user_id || $user->isInRole('admin'))}
+                <div class="d-flex gap-2">
+                    <a n:href="Edit:edit $post->id" class="btn btn-warning">Upravit příspěvek</a>
+                    <a href="{link deletePost! $post->id}" class="btn btn-danger">Smazat příspěvek</a>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Vložte nový komentář</h4>
+                    {control commentForm}
+                </div>
+            {/if}
+        </div>
+    </div>
+
+    <!-- Komentáře -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-4">Komentáře</h4>
+            <div class="comments">
+                {foreach $comments as $comment}
+                    <div class="mb-3 border-bottom pb-2">
+                        <p class="mb-1">
+                            <strong>
+                                <a href="mailto:{$comment->email}" n:tag-if="$comment->email" class="text-decoration-none">
+                                    {$comment->name}
+                                </a>
+                            </strong> napsal:
+                        </p>
+                        <div>{$comment->content}</div>
+
+                        {if $user->isLoggedIn() && ($user->id === $comment->user_id || $user->isInRole('admin'))}
+                            <a n:href="deleteComment! $comment->id" class="btn btn-sm btn-outline-danger mt-1">Smazat komentář</a>
+                        {/if}
+                    </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
 </div>
 
-{if $post->status =="OPEN" || $user->isLoggedIn() && $post->status !="ARCHIVED"}
-
-<a n:href="Edit:edit $post->id">Upravit příspěvek</a>
-
-<h2>Vložte nový příspěvek</h2>
-
-{control commentForm}
-{/if}
-<h2>Komentáře</h2>
-
-<div class="comments">
-	{foreach $comments as $comment}
-
-		<p><b><a href="mailto:{$comment->email}" n:tag-if="$comment->email">
-	
-			{$comment->name}
-
-		</a></b> napsal:</p>
-
-		<div>{$comment->content}</div>
-    		
-	{if $post->status == "OPEN" and $user->isLoggedIn() == True}
-	<a n:href="deleteComment! $comment->id">Smazat komentář</a>
-	{/if}
-	{/foreach}
-</div>

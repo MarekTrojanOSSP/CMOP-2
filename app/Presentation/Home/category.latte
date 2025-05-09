@@ -1,27 +1,52 @@
 {block content}
 
-<p><a n:href="Home:default">← zpět na výpis příspěvků</a></p>
+<div class="container mt-4">
+    <!-- Zpět na hlavní stránku -->
+    <p>
+        <a n:href="Home:default" class="btn btn-link text-decoration-none">
+            ← Zpět na výpis příspěvků
+        </a>
+    </p>
 
-    {foreach $categories as $category}
+    <!-- Kategorie -->
+    <div class="mb-4">
+        <h5>Kategorie:</h5>
+        <div class="d-flex flex-wrap gap-2">
+            {foreach $categories as $category}
+                <a href="{link Home:category $category->id}" class="badge bg-success text-white text-decoration-none p-2">
+                    {$category->name}
+                </a>
+            {/foreach}
+        </div>
+    </div>
 
-		<div> <a href="{link Home:category $category->id}">{$category->name}</a></div>
+    <!-- Výpis příspěvků -->
+    <div class="row g-4">
+        {foreach $posts as $post}
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    {if $post->image}
+                        <img src="{$basePath}/{$post->image}" class="card-img-top" alt="Obrázek">
+                    {else}
+                        <img src="{$basePath}/upload/no-image.png" class="card-img-top" alt="Bez obrázku">
+                    {/if}
+                    <div class="card-body">
+                        <div class="text-muted mb-2 small">{$post->created_at|date:'F j, Y'}</div>
 
-	{/foreach}
+                        <h5 class="card-title">
+                            <a href="{link Post:show $post->id}" class="text-decoration-none text-dark">
+                                {$post->title}
+                            </a>
+                        </h5>
 
-<div n:foreach="$posts as $post" class="post">
-		<div class="date">{$post->created_at|date:'F j, Y'}</div>
+                        <div class="mb-2">
+                            <span class="badge bg-light text-dark">{$post->category->name}</span>
+                        </div>
 
-		<h2><a href="{link Post:show $post->id}">{$post->title}</a></h2>
-
-		<div class="category">{$post->category->name}</div>
-
-		<div>{$post->content|truncate:256}</div>
-
-		{if $post->image}
-    		<img src="{$basePath}/{$post->image}">
-		{else}
-    		<img src="{$basePath}/upload/no-image.png">
-		{/if}
-	</div>
-
-{/block}
+                        <p class="card-text">{$post->content|truncate:256}</p>
+                    </div>
+                </div>
+            </div>
+        {/foreach}
+    </div>
+</div>

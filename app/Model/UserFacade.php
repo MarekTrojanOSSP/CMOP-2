@@ -16,6 +16,8 @@ final class UserFacade implements Nette\Security\Authenticator
 		TableName = 'users',
 		ColumnId = 'id',
 		ColumnName = 'username',
+		ColumnFirstname = 'firstname',
+		ColumnLastname = 'lastname',
 		ColumnPasswordHash = 'password',
 		ColumnEmail = 'email',
 		ColumnRole = 'role';
@@ -72,7 +74,7 @@ final class UserFacade implements Nette\Security\Authenticator
 	 * Add a new user to the database.
 	 * Throws a DuplicateNameException if the username is already taken.
 	 */
-	public function add(string $username, string $email, string $password): ActiveRow
+	public function add(string $username, string $firstname, string $lastname, string $email, string $password): ActiveRow
 	{
 		// Validate the email format
 		Nette\Utils\Validators::assert($email, 'email');
@@ -81,6 +83,8 @@ final class UserFacade implements Nette\Security\Authenticator
 		try {
 			return $this->database->table(self::TableName)->insert([
 				self::ColumnName => $username,
+				self::ColumnFirstname => $firstname,
+				self::ColumnLastname => $lastname,
 				self::ColumnPasswordHash => $this->passwords->hash($password),
 				self::ColumnEmail => $email,
 			]);
@@ -88,7 +92,68 @@ final class UserFacade implements Nette\Security\Authenticator
 			throw new DuplicateNameException;
 		}
 	}
+
+	public function getUserById(int $userId)
+    {
+        return $this->database
+            ->table('users')
+            ->get($userId);
+    }
+
+
+	public function getUsers()
+	{
+		return $this->database->table('users');
+	}
+
+	public function removeUser(int $userId): bool
+	{
+    try {
+        $user = $this->database
+            ->table('users')
+            ->get($userId);
+
+        if (!$user) {
+            return false;
+        }
+
+        $this->deleteCommentsUser($userId);
+
+        $posts = $this->database
+            ->table('post')
+            ->where('user_id', $userId);
+
+        foreach ($posts as $post) {
+            $this->deleteCommentsPost($post->id);
+            $post->delete();
+        }
+
+        $user->delete();
+
+        return true;
+    } catch (\Exception $e) {
+        return false;
+    }
+	}
+
+	public function deleteCommentsUser(int $userId): void
+	{ 
+	$this->database
+		->table('comments')
+		->where('user_id', $userId)
+		->delete();
+	}
+
+	public function deleteCommentsPost(int $postId): void
+    { 
+    $this->database
+        ->table('comments')
+        ->where('post_id', $postId)
+        ->delete();
+    }
 }
+
+
 
 class DuplicateNameException extends \Exception
 {

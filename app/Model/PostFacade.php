@@ -92,4 +92,22 @@ final class PostFacade
         ]);
     }
 
+	public function deletePost(int $postId): void
+	{
+		// Smaž komentáře navázané na post
+		$this->deleteCommentsPost($postId);
+	
+		// Smaž samotný post
+		$this->database
+			->table('post')
+			->where('id', $postId)
+			->delete();
+	}
+	public function deleteCommentsPost(int $postId): void
+    { 
+    $this->database
+        ->table('comment')
+        ->where('post_id', $postId)
+        ->delete();
+    }
 }

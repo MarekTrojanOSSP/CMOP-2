@@ -70,15 +70,21 @@ final class SignPresenter extends Nette\Application\UI\Presenter
 	protected function createComponentSignUpForm(): Form
 	{
 		$form = $this->formFactory->create();
-		$form->addText('username', 'Pick a username:')
-			->setRequired('Please pick a username.');
+		$form->addText('username', 'Zadejte přezdívku:')
+			->setRequired('Prosím zvolte si přezdívku.');
 
-		$form->addEmail('email', 'Your e-mail:')
-			->setRequired('Please enter your e-mail.');
+		$form->addText('firstname', 'Zadejte jméno:')
+			->setRequired('Zadejte jméno.');
 
-		$form->addPassword('password', 'Create a password:')
+		$form->addText('lastname', 'Zadejte příjmení:')
+			->setRequired('Zadejte příjmení.');
+
+		$form->addEmail('email', 'Zadejte email:')
+			->setRequired('Zadejte email.');
+
+		$form->addPassword('password', 'Vytvořte heslo:')
 			->setOption('description', sprintf('at least %d characters', $this->userFacade::PasswordMinLength))
-			->setRequired('Please create a password.')
+			->setRequired('Prosím vytvořte heslo.')
 			->addRule($form::MinLength, null, $this->userFacade::PasswordMinLength);
 
 		$form->addSubmit('send', 'Sign up');
@@ -87,11 +93,11 @@ final class SignPresenter extends Nette\Application\UI\Presenter
 		$form->onSuccess[] = function (Form $form, \stdClass $data): void {
 			try {
 				// Attempt to register a new user
-				$this->userFacade->add($data->username, $data->email, $data->password);
+				$this->userFacade->add($data->username, $data->firstname, $data->firstname, $data->email, $data->password);
 				$this->redirect('Dashboard:');
 			} catch (DuplicateNameException) {
 				// Handle the case where the username is already taken
-				$form['username']->addError('Username is already taken.');
+				$form['username']->addError('Přezdívka je už zabraná.');
 			}
 		};
 

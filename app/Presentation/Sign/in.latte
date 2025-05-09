@@ -1,8 +1,18 @@
 {* The sign-in page *}
 
 {block content}
-<h1 n:block=title>Sign In</h1>
 
-{include bootstrap-form signInForm}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 n:block=title class="card-title text-center mb-4">Přihlášení</h1>
 
-<p class="text-center"><a n:href="up">Don't have an account yet? Sign up.</a></p>
+            {include bootstrap-form signInForm}
+
+            <p class="text-center mt-3">
+                <a n:href="up" class="text-decoration-none">Ještě nemáte účet? Zaregistrujte se.</a>
+            </p>
+        </div>
+    </div>
+</div>
+

@@ -1,8 +1,18 @@
 {* The sign-up page *}
 
-{block content}
-<h1 n:block=title>Sign Up</h1>
+{block content} 
 
-{include bootstrap-form signUpForm}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 n:block=title class="card-title text-center mb-4">Registrace</h1>
 
-<p class="text-center"><a n:href="in">Already have an account? Log in.</a></p>
+            {include bootstrap-form signUpForm}
+
+            <p class="text-center mt-3">
+                <a n:href="in" class="text-decoration-none">Máte už účet? Přihlaste se.</a>
+            </p>
+        </div>
+    </div>
+</div>
+

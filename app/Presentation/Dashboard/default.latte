@@ -1,6 +1,12 @@
 {block content}
-<h1>Dashboard</h1>
 
-<p>If you see this page, it means you have successfully logged in.</p>
-
-<p>(<a n:href="Sign:out">Sign out</a>)</p>
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <h1 class="card-title mb-3">Dashboard</h1>
+            <p class="card-text">Jste úspěšně přihlášeni.</p>
+            <a n:href="Home:default" class="btn btn-outline-success mt-3">Hlavní stránka</a>
+            <a n:href="Sign:out" class="btn btn-outline-danger mt-3">Odhlásit se</a>
+        </div>
+    </div>
+</div>

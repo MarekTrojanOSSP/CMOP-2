@@ -1,6 +1,13 @@
 {* The sign-out page *}
 
 {block content}
-<h1 n:block=title>You have been signed out</h1>
 
-<p><a n:href="in">Sign in to another account</a></p>
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="alert alert-success text-center shadow-sm" role="alert">
+        <h1 n:block=title class="h4 mb-3">Byli jste odhlášeni</h1>
+        <p class="mb-0">
+            <a n:href="in" class="btn btn-outline-success mt-2">Přihlásit se k jinému účtu</a>
+        </p>
+    </div>
+</div>
+
