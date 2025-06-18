@@ -56,7 +56,9 @@
                     <a n:href="Edit:edit $post->id" class="btn btn-warning">Upravit příspěvek</a>
                     <a href="{link deletePost! $post->id}" class="btn btn-danger">Smazat příspěvek</a>
                 </div>
+            {/if}
 
+            {if $user->isLoggedIn() || $user->isInRole('admin')}
                 <div class="mt-4">
                     <h4>Vložte nový komentář</h4>
                     {control commentForm}

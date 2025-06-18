@@ -46,12 +46,14 @@ final class PostPresenter extends Nette\Application\UI\Presenter
 	private function commentFormSucceeded(\stdClass $data): void
 	{
 		$postId = $this->getParameter('postId');
+		$userId = $this->getUser()->getId();
 
 		$this->facade->getComment($postId)->insert([
 			'post_id' => $postId,
 			'name' => $data->name,
 			'email' => $data->email,
-			'content' => $data->content
+			'content' => $data->content,
+			'user_id' => $userId
 		]);
 
 		$this->flashMessage('Děkuji za komentář', 'success');
